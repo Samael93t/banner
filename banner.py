@@ -107,7 +107,17 @@ def crear_banner():
 
     os.system("clear")
     try:
-        subprocess.run(shlex.split(f"figlet -f standard '{texto}' | lolcat -F 0.5"))
+        # Ejecutar figlet y lolcat usando subprocess.Popen para la tubería
+        figlet_process = subprocess.Popen(["figlet", "-f", "standard", texto], stdout=subprocess.PIPE)
+        lolcat_process = subprocess.Popen(["lolcat", "-F", "0.5"], stdin=figlet_process.stdout, stdout=subprocess.PIPE)
+        figlet_process.stdout.close()  # Permitir que figlet termine
+        output, error = lolcat_process.communicate()
+
+        if error:
+            print(f"Error al ejecutar lolcat: {error.decode()}")
+        else:
+            print(output.decode())
+
     except FileNotFoundError:
         print("Error: figlet o lolcat no se encontraron. Asegúrate de que están instalados.")
         return
