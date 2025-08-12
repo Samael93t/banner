@@ -21,6 +21,23 @@ def instalar_paquete(paquete):
             print(f"Error al instalar {paquete}: {e}")
             exit(1)
 
+def instalar_lolcat():
+    """Instala lolcat usando gem."""
+    try:
+        subprocess.run(["lolcat", "--version"], check=True, capture_output=True)
+        print("lolcat ya está instalado.")
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        print("Instalando lolcat usando gem...")
+        try:
+            # Primero, asegúrate de que ruby esté instalado
+            subprocess.run(["pkg", "install", "ruby", "-y"], check=True)
+            # Luego, instala lolcat usando gem
+            subprocess.run(["gem", "install", "lolcat"], check=True, capture_output=True)
+            print("lolcat instalado con éxito usando gem.")
+        except subprocess.CalledProcessError as e:
+            print(f"Error al instalar lolcat usando gem: {e}")
+            exit(1)
+
 def guardar_configuracion(texto, ruta_cancion):
     """Guarda la configuración en el archivo de configuración."""
     try:
@@ -92,7 +109,7 @@ def crear_banner():
     """Crea y muestra el banner."""
     instalar_paquete("mpv")
     instalar_paquete("figlet")
-    instalar_paquete("lolcat")
+    instalar_lolcat()  # Usar la función de instalación de lolcat con gem
 
     configuracion = cargar_configuracion()
     if configuracion:
@@ -159,4 +176,5 @@ def main():
             configuracion = cargar_configuracion()
 
 if __name__ == "__main__":
+    main()
     main()
